@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Saída</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <main class="container">
+
+        <!-- TÍTULO -->
+        <header class="header">
+            <h1>Cadastro de Saída</h1>
+            <p>Preencha os dados para acompanhamento</p>
+        </header>
+
+        <!-- FORMULÁRIO -->
+        <section class="form-section">
+            <form id="formCadastro">
+
+                <!-- NOME -->
+                <div class="form-group">
+                    <div class="label-wrapper">
+                        <label for="nome">Nome completo</label>
+                        <button type="button" class="btn-icon" onclick="lerTexto('Nome completo')" title="Ouvir rótulo">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="nome" name="nome" required>
+                    <div class="field-controls">
+                        <button type="button" class="btn-icon" onclick="iniciarEscuta('nome', this)">
+                            <i class="fas fa-microphone"></i> Falar
+                        </button>
+                        <button type="button" class="btn-icon" onclick="lerCampo('nome')">
+                            <i class="fas fa-volume-up"></i> Ouvir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DOCUMENTO -->
+                <div class="form-group">
+                    <div class="label-wrapper">
+                        <label for="cpf">Informe sua Matrícula</label>
+                        <button type="button" class="btn-icon" onclick="lerTexto('Informe sua Matrícula')">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="cpf" name="cpf" inputmode="numeric" pattern="[0-9]*" required>
+                    <div class="field-controls">
+                        <button type="button" class="btn-icon" onclick="iniciarEscuta('cpf', this)">
+                            <i class="fas fa-microphone"></i> Falar
+                        </button>
+                        <button type="button" class="btn-icon" onclick="lerCampo('cpf')">
+                            <i class="fas fa-volume-up"></i> Ouvir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DATA DE SAÍDA -->
+                <div class="form-group">
+                    <div class="label-wrapper">
+                        <label for="data_saida">Data de saída</label>
+                        <button type="button" class="btn-icon" onclick="lerTexto('Data de saída')">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                    <input type="date" id="data_saida" name="data_saida" required>
+                </div>
+
+                <div class="form-group">
+    <label>Tipo de apoio</label>
+
+    <div class="checkbox-group">
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="emprego" name="tipo_apoio" value="emprego">
+            <label for="emprego">Emprego</label>
+            <a href="#" class="info-link">Saiba mais</a>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="moradia" name="tipo_apoio" value="moradia">
+            <label for="moradia">Moradia</label>
+            <a href="#" class="info-link">Saiba mais</a>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="saude" name="tipo_apoio" value="saude">
+            <label for="saude">Saúde</label>
+            <a href="#" class="info-link">Saiba mais</a>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="educacao" name="tipo_apoio" value="educacao">
+            <label for="educacao">Educação</label>
+            <a href="#" class="info-link">Saiba mais</a>
+        </div>
+
+    </div>
+</div>
+
+                <!-- OBSERVAÇÕES -->
+                <div class="form-group">
+                    <div class="label-wrapper">
+                        <label for="observacoes">Observações</label>
+                        <button type="button" class="btn-icon" onclick="lerTexto('Observações')">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                    <textarea id="observacoes" name="observacoes" rows="3"></textarea>
+                    <div class="field-controls">
+                        <button type="button" class="btn-icon" onclick="iniciarEscuta('observacoes', this)">
+                            <i class="fas fa-microphone"></i> Falar
+                        </button>
+                        <button type="button" class="btn-icon" onclick="lerCampo('observacoes')">
+                            <i class="fas fa-volume-up"></i> Ouvir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BOTÕES GERAIS -->
+                <div class="form-actions">
+                    <button type="button" id="btnOuvir" class="btn-secondary">Ouvir Preenchimento</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- MENSAGEM -->
+        <section class="feedback">
+            <p id="mensagem"></p>
+        </section>
+
+    </main>
+
+    <script>
+        // Funções de Síntese de Voz (Falar)
+        function lerTexto(texto) {
+            if (!texto) return;
+            window.speechSynthesis.cancel(); // Para o que estiver falando no momento
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function capitalizarTexto(texto) {
+            return texto.toLowerCase().replace(/(^\w|\s\w)/g, m => m.toUpperCase()).replace(/\.$/, '');
+        }
+
+        function lerCampo(idCampo) {
+            const valor = document.getElementById(idCampo).value;
+            lerTexto(valor || "O campo está vazio");
+        }
+
+        function iniciarEscuta(idCampo, elemento) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert("Seu navegador não suporta reconhecimento de voz.");
+                return;
+            }
+
+            window.speechSynthesis.cancel(); 
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'pt-BR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                elemento.classList.add('recording');
+            };
+
+            recognition.onresult = (e) => {
+                let transcript = e.results[0][0].transcript;
+                const input = document.getElementById(idCampo);
+
+                if (idCampo === 'cpf') {
+                    // Mapeamento de palavras para números (comum em ditado de IDs)
+                    const mapaNumeros = {
+                        'zero': '0', 'um': '1', 'uma': '1', 'dois': '2', 'três': '3',
+                        'quatro': '4', 'cinco': '5', 'seis': '6', 'meia': '6',
+                        'sete': '7', 'oito': '8', 'nove': '9'
+                    };
+                    
+                    // Converte palavras faladas em números e remove espaços/letras restantes
+                    let palavras = transcript.toLowerCase().split(/[\s-]+/);
+                    transcript = palavras.map(p => mapaNumeros[p] || p).join('').replace(/\D/g, '');
+                } else if (idCampo === 'nome') {
+                    // Nome: Capitaliza e remove ponto final
+                    transcript = capitalizarTexto(transcript);
+                } else {
+                    // Observações: Apenas limpa espaços e pontos extras
+                    transcript = transcript.trim().replace(/\.$/, '');
+                }
+
+                input.value = transcript;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Erro no reconhecimento: ", event.error);
+                elemento.classList.remove('recording');
+            };
+
+            recognition.onend = () => {
+                elemento.classList.remove('recording');
+            };
+
+            recognition.start();
+        }
+
+        // Resumo Geral (Existente)
+        document.getElementById('btnOuvir').addEventListener('click', () => {
+            const nome = document.getElementById('nome').value;
+            const matricula = document.getElementById('cpf').value;
+            const data = document.getElementById('data_saida').value;
+            const apoiosChecked = document.querySelectorAll('input[name="tipo_apoio"]:checked');
+            const apoios = Array.from(apoiosChecked).map(cb => cb.parentElement.querySelector('label').innerText).join(', ');
+            const obs = document.getElementById('observacoes').value;
+
+            let texto = `Resumo: Nome ${nome || 'não informado'}. Matrícula ${matricula || 'não informada'}. `;
+            texto += `Data ${data || 'não informada'}. Apoios: ${apoios || 'nenhum'}. Observações: ${obs || 'vazio'}.`;
+            
+            lerTexto(texto);
+        });
+    </script>
+
+</body>
+</html>
